@@ -63,10 +63,10 @@ title('Magnetometer RAW data')
 grid
 
 %% Filtering RAW data
-LPF = designfilt('lowpassfir','PassbandFrequency',0.25, ...
-      'StopbandFrequency',0.35,'PassbandRipple',0.5, ...
+LPF = designfilt('lowpassfir','PassbandFrequency',0.01, ...
+      'StopbandFrequency',0.05,'PassbandRipple',0.1, ...
       'StopbandAttenuation',65,'DesignMethod','kaiserwin');
-% fvtool(LPF)
+fvtool(LPF)
 
 acc_xf = filtfilt(LPF,acc_x);
 acc_yf = filtfilt(LPF,acc_y);
@@ -75,11 +75,11 @@ acc_zf = filtfilt(LPF,acc_z);
 gyro_xf = filtfilt(LPF,gyro_x);
 gyro_yf = filtfilt(LPF,gyro_y);
 gyro_zf = filtfilt(LPF,gyro_z);
-
+ 
 % figure('name', 'test')
-% plot(t, acc_x)
+% plot(t, acc_y)
 % hold on
-% plot(t, acc_xf)
+% plot(t, acc_yf)
 % hold off
 % grid minor
 
@@ -181,15 +181,15 @@ mag_zc = (mag_z - mag_z_os) * mag_z_scale;
 
 figure('name','Accelerometer')
 plot3(acc_xf, acc_yf, acc_zf)
-hold on
-plot3(acc_xc, acc_yc, acc_zc)
+% hold on
+% plot3(acc_xc, acc_yc, acc_zc)
 axis equal
 grid
 
 figure('name','Magnetometer')
 plot3(mag_x, mag_y, mag_z)
-hold on
-plot3(mag_xc, mag_yc, mag_zc)
+% hold on
+% plot3(mag_xc, mag_yc, mag_zc)
 axis equal
 grid
 
