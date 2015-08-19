@@ -10,7 +10,7 @@ clc
 Parameters
 
 %% Import logged data
-RAW = dlmread('log_raw.txt');
+RAW = dlmread('log_raw_2.txt');
 acc_x = RAW(:,1);
 acc_y = RAW(:,2);
 acc_z = RAW(:,3);
@@ -51,22 +51,22 @@ t = 0 : dt : (length(RAW)*dt - dt);
 % legend('p', 'q', 'r')
 % title('Gyroscope RAW data')
 % grid
-
-figure('name','Magnetometer')
-plot(t, mag_x)
-hold on
-plot(t, mag_y)
-plot(t, mag_z)
-hold off
-legend('X_{body}', 'Y_{body}', 'Z_{body}')
-title('Magnetometer RAW data')
-grid
+% 
+% figure('name','Magnetometer')
+% plot(t, mag_x)
+% hold on
+% plot(t, mag_y)
+% plot(t, mag_z)
+% hold off
+% legend('X_{body}', 'Y_{body}', 'Z_{body}')
+% title('Magnetometer RAW data')
+% grid
 
 %% Filtering RAW data
-LPF = designfilt('lowpassfir','PassbandFrequency',0.01, ...
-      'StopbandFrequency',0.05,'PassbandRipple',0.1, ...
+LPF = designfilt('lowpassfir','PassbandFrequency',0.10, ...
+      'StopbandFrequency',0.15,'PassbandRipple',0.1, ...
       'StopbandAttenuation',65,'DesignMethod','kaiserwin');
-fvtool(LPF)
+% fvtool(LPF)
 
 acc_xf = filtfilt(LPF,acc_x);
 acc_yf = filtfilt(LPF,acc_y);
@@ -82,26 +82,26 @@ gyro_zf = filtfilt(LPF,gyro_z);
 % plot(t, acc_yf)
 % hold off
 % grid minor
-
-figure('name','Accelerometer')
-plot(t, acc_xf)
-hold on
-plot(t, acc_yf)
-plot(t, acc_zf)
-hold off
-title('Accelerometer filtered data')
-legend('X_{body}', 'Y_{body}', 'Z_{body}')
-grid
-
-figure('name','Gyroscope')
-plot(t, gyro_xf)
-hold on
-plot(t, gyro_yf)
-plot(t, gyro_zf)
-hold off
-legend('p', 'q', 'r')
-title('Gyroscope filtered data')
-grid
+% 
+% figure('name','Accelerometer')
+% plot(t, acc_xf)
+% hold on
+% plot(t, acc_yf)
+% plot(t, acc_zf)
+% hold off
+% title('Accelerometer filtered data')
+% legend('X_{body}', 'Y_{body}', 'Z_{body}')
+% grid
+% 
+% figure('name','Gyroscope')
+% plot(t, gyro_xf)
+% hold on
+% plot(t, gyro_yf)
+% plot(t, gyro_zf)
+% hold off
+% legend('p', 'q', 'r')
+% title('Gyroscope filtered data')
+% grid
 
 %% Calibrating accelerometer
 acc_max_x = max(acc_xf);
