@@ -28,7 +28,7 @@ dt = 1/fs;
 flag = 0;
 sstart = 0;
 sstop = length(RAW);
-
+    
 t = 0 : dt : (length(RAW)*dt - dt);
 
 %% Plot RAW data
@@ -180,17 +180,35 @@ mag_zc = (mag_z - mag_z_os) * mag_z_scale;
 
 
 figure('name','Accelerometer')
-plot3(acc_xf, acc_yf, acc_zf)
-% hold on
-% plot3(acc_xc, acc_yc, acc_zc)
+plot3(acc_xf, acc_yf, acc_zf,'.')
+hold on
+plot3(acc_xc, acc_yc, acc_zc)
 axis equal
 grid
 
 figure('name','Magnetometer')
 plot3(mag_x, mag_y, mag_z)
-% hold on
-% plot3(mag_xc, mag_yc, mag_zc)
+hold on
+plot3(mag_xc, mag_yc, mag_zc)
 axis equal
 grid
+
+figure('Position',[10,40,1024,600]);
+subplot(3,1,1:2)
+    hold on;    
+    plot(1:length(acc_xf), acc_xf, 'b');
+    plot(1:length(acc_yf), acc_yf, 'r');
+    plot(1:length(acc_zf), acc_zf, 'g');
+    legend('X', 'Y', 'Z');
+    title('Accelerometer calibration');
+    ylabel('Sensor units');
+subplot(3,1,3)    
+    hold on;
+    plot(1:length(acc_xf), sqrt((acc_xf.^2) + (acc_yf.^2) + (acc_zf.^2)), 'Color', [0.6, 0.6, 0.6]);
+    plot([0 length(acc_xf)], [1000 1000], 'k:');
+    legend('Feild magnitude', 'Mean feild magnitude');
+    ylabel('Sensor units');
+    xlabel('Sample');
+drawnow;
 
 %% End of code
