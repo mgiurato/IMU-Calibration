@@ -4,7 +4,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 close all 
-% clc
+clc
 
 %% Parameters definition
 Parameters
@@ -12,45 +12,24 @@ Parameters
 %% Import logged data
 RAW = dlmread('log_raw_3.txt');
 acc = RAW(:,1:3);
-gyro = RAW(:,4:6);
 mag = RAW(:,7:9);
-
-%% Getting information from logged data
-fs = 50;                   %[Hz]
-dt = 1/fs;
-
-flag = 0;
-sstart = 0;
-sstop = length(RAW);
-    
-t = 0 : dt : (length(RAW)*dt - dt);
 
 %% Plot RAW data
 % figure('name','Accelerometer')
-% plot(t, acc(:,1))
+% plot(1:length(acc), acc(:,1))
 % hold on
-% plot(t, acc(:,2))
-% plot(t, acc(:,3))
+% plot(1:length(acc), acc(:,2))
+% plot(1:length(acc), acc(:,3))
 % hold off
 % legend('X_{body}', 'Y_{body}', 'Z_{body}')
 % title('Accelerometer RAW data')
 % grid
 % 
-% figure('name','Gyroscope')
-% plot(t, gyro(:,1))
-% hold on
-% plot(t, gyro(:,2))
-% plot(t, gyro(:,3))
-% hold off
-% legend('p', 'q', 'r')
-% title('Gyroscope RAW data')
-% grid
-% 
 % figure('name','Magnetometer')
-% plot(t, mag(:,1))
+% plot(1:length(mag), mag(:,1))
 % hold on
-% plot(t, mag(:,2))
-% plot(t, mag(:,3))
+% plot(1:length(mag), mag(:,2))
+% plot(1:length(mag), mag(:,3))
 % hold off
 % legend('X_{body}', 'Y_{body}', 'Z_{body}')
 % title('Magnetometer RAW data')
@@ -64,33 +43,14 @@ LPF = designfilt('lowpassfir','PassbandFrequency',0.10, ...
 
 acc_f = filtfilt(LPF,acc);
 
-gyro_f = filtfilt(LPF,gyro);
- 
-% figure('name', 'test')
-% plot(t, acc)
-% hold on
-% plot(t, acc_f)
-% hold off
-% grid minor
-
 % figure('name','Accelerometer')
-% plot(t, acc_f(:,1))
+% plot(1:length(acc_f), acc_f(:,1))
 % hold on
-% plot(t, acc_f(:,2))
-% plot(t, acc_f(:,3))
+% plot(1:length(acc_f), acc_f(:,2))
+% plot(1:length(acc_f), acc_f(:,3))
 % hold off
 % title('Accelerometer filtered data')
 % legend('X_{body}', 'Y_{body}', 'Z_{body}')
-% grid
-% 
-% figure('name','Gyroscope')
-% plot(t, gyro_f(:,1))
-% hold on
-% plot(t, gyro_f(:,2))
-% plot(t, gyro_f(:,3))
-% hold off
-% legend('p', 'q', 'r')
-% title('Gyroscope filtered data')
 % grid
 
 %% Calibrating accelerometer
@@ -186,6 +146,26 @@ disp('The estimated Magnetometer scale factors are:')
 disp(['X:', num2str(gain_m(1))])
 disp(['Y:', num2str(gain_m(2))])
 disp(['Z:', num2str(gain_m(3))])
+
+%% Generate output file
+fid = fopen('Acc_Mag.txt', 'w');
+fprintf(fid, 'The estimated Accelerometer biases are:\n');
+fprintf(fid, 'X: %f\n', bias_a(1));
+fprintf(fid, 'Y: %f\n', bias_a(2));
+fprintf(fid, 'Z: %f\n', bias_a(3));
+fprintf(fid, 'The estimated Accelerometer scale factors are:\n');
+fprintf(fid, 'X: %f\n', gain_a(1));
+fprintf(fid, 'Y: %f\n', gain_a(2));
+fprintf(fid, 'Z: %f\n', gain_a(3));
+fprintf(fid, 'The estimated Magnetometer biases are:\n');
+fprintf(fid, 'X: %f\n', bias_m(1));
+fprintf(fid, 'Y: %f\n', bias_m(2));
+fprintf(fid, 'Z: %f\n', bias_m(3));
+fprintf(fid, 'The estimated Magnetometer scale factors are:\n');
+fprintf(fid, 'X: %f\n', gain_m(1));
+fprintf(fid, 'Y: %f\n', gain_m(2));
+fprintf(fid, 'Z: %f\n', gain_m(3));
+fclose(fid);
 
 %% 3D PLOT
 % figure('name','Accelerometer')
