@@ -6,9 +6,6 @@ clear all
 close all 
 clc
 
-%% Parameters definition
-Parameters
-
 %% Import logged data
 RAW = dlmread('log_raw_3.txt');
 acc = RAW(:,1:3);
