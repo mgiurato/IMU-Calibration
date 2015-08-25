@@ -1,6 +1,6 @@
-%% IMU_Calibration         %
+%% AccMag_Calibration      %
 % Author: Mattia Giurato   %
-% Last review: 2015/07/31  %
+% Last review: 2015/08/25  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 close all 
@@ -80,12 +80,12 @@ subplot(3,1,1:2)
     plot(1:length(acc_c), acc_c(:,3), 'g');
     legend('X', 'Y', 'Z');
     title('Accelerometer calibration');
-    ylabel('Sensor units');
+    ylabel('Acceleration [m/s^2]');
 subplot(3,1,3)    
     hold on;
     plot(1:length(acc_c), sqrt((acc_c(:,1).^2) + (acc_c(:,2).^2) + (acc_c(:,3).^2)), 'Color', [0.6, 0.6, 0.6]);
     plot([0 length(acc_c)], [9.81 9.81], 'k:');
-    legend('Measured g', 'g');
+    legend('Measured field', 'field');
     ylabel('[m/s^2]');
     xlabel('Sample');
 drawnow;
@@ -127,7 +127,7 @@ subplot(3,1,1:2)
     plot(1:length(mag_c), mag_c(:,3), 'g');
     legend('X', 'Y', 'Z');
     title('Magnetometer calibration');
-    ylabel('Sensor units');
+    ylabel('Normalized flux []');
 subplot(3,1,3)    
     hold on;
     plot(1:length(mag_c), sqrt((mag_c(:,1).^2) + (mag_c(:,2).^2) + (mag_c(:,3).^2)), 'Color', [0.6, 0.6, 0.6]);
