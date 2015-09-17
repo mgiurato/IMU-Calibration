@@ -7,7 +7,7 @@ close all
 clc
 
 %% Import logged data
-RAW = dlmread('log_raw_3.txt');
+RAW = dlmread('log_raw_7.txt');
 acc = RAW(:,1:3);
 mag = RAW(:,7:9);
 
@@ -101,7 +101,7 @@ disp(['Z:', num2str(gain_a(3))])
 
 % Find gains and biases
 bias_m_guess = 0.2;
-gain_m_guess = 1/360;
+gain_m_guess = 1/(1000*0.35);
 
 optionsOpt = optimset('LargeScale', 'off', 'Display', 'off', 'TolX', 1E-21, 'TolFun', 1E-21, 'HessUpdate', 'bfgs', 'MaxIter', 128);  
 optVal = [ones(1,3)*bias_m_guess ones(1,3)*gain_m_guess];  	% vector of initial guess for optimal value
@@ -165,14 +165,41 @@ fprintf(fid, 'Z: %f\n', gain_m(3));
 fclose(fid);
 
 %% 3D PLOT
-% figure('name','Accelerometer')
-% plot3(acc_c(:,1), acc_c(:,2), acc_c(:,3))
-% axis equal
-% grid
-% 
-% figure('name','Magnetometer')
-% plot3(mag_c(:,1), mag_c(:,2), mag_c(:,3))
-% axis equal
-% grid
+[x,y,z] = sphere;
+figure('name','Accelerometer_sphere')
+plot3(acc_c(:,1), acc_c(:,2), acc_c(:,3))
+hold on
+m = mesh(9.81*x,9.81*y,9.81*z);
+set(m,'facecolor','none')
+axis equal
+grid
+hold off
+
+figure('name','Magnetometer_sphere')
+plot3(mag_c(:,1), mag_c(:,2), mag_c(:,3))
+axis equal
+hold on 
+m = mesh(x,y,z);
+set(m,'facecolor','none')
+grid
+hold off
+
+figure('name','Accelerometer_afterbefore')
+plot3(acc_c(:,1), acc_c(:,2), acc_c(:,3))
+hold on
+plot3(9.81/1000*acc_f(:,1), 9.81/1000*acc_f(:,2), 9.81/1000*acc_f(:,3))
+axis equal
+grid
+legend('Calibrated', 'Non-calibrated');
+hold off
+
+figure('name','Magnetometer_afterbefore')
+plot3(mag_c(:,1), mag_c(:,2), mag_c(:,3))
+axis equal
+hold on
+plot3(1/(1000*0.35)*mag(:,1), 1/(1000*0.35)*mag(:,2), 1/(1000*0.35)*mag(:,3))
+grid
+legend('Calibrated', 'Non-calibrated');
+hold off
 
 %% End of code

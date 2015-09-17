@@ -1,16 +1,16 @@
 The estimated Accelerometer biases are:
-X: 0.045165
-Y: 0.021291
-Z: 0.444777
+X: -0.006740
+Y: 0.028269
+Z: 0.461972
 The estimated Accelerometer scale factors are:
-X: 0.009389
-Y: 0.009645
-Z: 0.009938
+X: 0.009209
+Y: 0.009637
+Z: 0.009982
 The estimated Magnetometer biases are:
-X: 0.297057
-Y: 0.204551
-Z: -0.234627
+X: 0.212791
+Y: 0.134722
+Z: -0.496706
 The estimated Magnetometer scale factors are:
-X: 0.002654
-Y: 0.002648
-Z: 0.002739
+X: 0.002736
+Y: 0.002853
+Z: 0.003150
