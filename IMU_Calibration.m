@@ -7,9 +7,12 @@ close all
 clc
 
 %% Import logged data
-RAW = dlmread('log_raw_7.txt');
-acc = RAW(:,1:3);
-mag = RAW(:,7:9);
+endACCMAG = 3600;
+
+RAW = dlmread('log_raw_new4.txt');
+acc = RAW(1:endACCMAG,1:3);
+mag = RAW(1:endACCMAG,7:9);
+gyr = RAW(endACCMAG+1:length(RAW),4:6);
 
 %% Plot RAW data
 % figure('name','Accelerometer')
@@ -33,12 +36,13 @@ mag = RAW(:,7:9);
 % grid
 
 %% Filtering RAW data
-LPF = designfilt('lowpassfir','PassbandFrequency',0.10, ...
-      'StopbandFrequency',0.15,'PassbandRipple',0.1, ...
+LPF = designfilt('lowpassfir','PassbandFrequency',0.15, ...
+      'StopbandFrequency',0.25,'PassbandRipple',0.1, ...
       'StopbandAttenuation',65,'DesignMethod','kaiserwin');
 % fvtool(LPF)
 
 acc_f = filtfilt(LPF,acc);
+gyr_f = filtfilt(LPF,gyr);
 
 % figure('name','Accelerometer')
 % plot(1:length(acc_f), acc_f(:,1))
@@ -50,7 +54,7 @@ acc_f = filtfilt(LPF,acc);
 % legend('X_{body}', 'Y_{body}', 'Z_{body}')
 % grid
 
-%% Calibrating accelerometer
+%% Calibrating Accelerometer
 
 % Find gains and biases
 bias_a_guess = .5;
@@ -97,10 +101,10 @@ disp(['X:', num2str(gain_a(1))])
 disp(['Y:', num2str(gain_a(2))])
 disp(['Z:', num2str(gain_a(3))])
 
-%% Calibrating magnetometer
+%% Calibrating Magnetometer
 
 % Find gains and biases
-bias_m_guess = 0.2;
+bias_m_guess = -0.1;
 gain_m_guess = 1/(1000*0.35);
 
 optionsOpt = optimset('LargeScale', 'off', 'Display', 'off', 'TolX', 1E-21, 'TolFun', 1E-21, 'HessUpdate', 'bfgs', 'MaxIter', 128);  
@@ -144,8 +148,82 @@ disp(['X:', num2str(gain_m(1))])
 disp(['Y:', num2str(gain_m(2))])
 disp(['Z:', num2str(gain_m(3))])
 
+%% Calibrating Gyroscope
+
+%Extracting each measurement
+delta = 100;
+gyr_x = -gyr(540:540+delta,1);
+gyr_y = gyr(140:140+delta,2);
+gyr_z = gyr(990:990+delta,3);
+
+gyro = [gyr_x gyr_y gyr_z];
+
+% figure
+% plot(gyr_x)
+% hold on
+% plot(gyr_y)
+% plot(gyr_z)
+% hold off
+
+%Setting gyro parameters
+target = pi;
+samplePeriod = 1/50;
+gain_g = [0.001 0.001 0.001];
+bias_g = zeros(length(gyro),3);
+
+% Find gains and biases
+for i = 1:3;
+    sensMeas = gyro(:,i);
+    bias_g(:,i) = sensMeas(1) + ([1:numel(sensMeas)]'/numel(sensMeas)) * (sensMeas(end) - sensMeas(1));
+    sensMeas = sensMeas - bias_g(:,i);
+
+    optionsOpt = optimset('LargeScale', 'off', 'Display', 'off', 'TolX', 1E-21, 'TolFun', 1E-21, 'HessUpdate', 'bfgs', 'MaxIter', 128);  
+    optVal = [gain_g(i)];                            % vector of initial guess for optimal value
+    optValScaler = 1 ./ optVal;                 % individual scalers unit optimal values
+    optVal = optVal .* optValScaler;            % initial guess for optimal values = unity
+    optVal = fminunc('objFunGyro', optVal, optionsOpt, optValScaler, sensMeas, target, samplePeriod);
+    optVal = optVal ./ optValScaler;            % rescale optimal values to original units
+    gain_g(i) = optVal(1);
+    
+    %-------------------------------------------------------------------------- 
+    % Plot calibrated data
+    sensMeas = gain_g(i)*sensMeas;
+    angle = zeros(length(sensMeas), 1);
+    for t = 2:numel(sensMeas)
+        angle(t) = angle(t-1) + sensMeas(t) * samplePeriod;
+    end
+
+    figure
+    hold on;    
+    plot(1:length(sensMeas), sensMeas + gain_g(i)*(bias_g(:,i)-bias_g(1,i)), 'b');
+    plot(1:length(sensMeas), angle, 'r');
+    plot(1:length(sensMeas), gain_g(i)*(bias_g(:,i)-bias_g(1,i)), 'k:');     
+    plot([1 length(sensMeas)], [target target], 'k--');     
+    legend('Angular velocity', 'Angular position', 'Bias', num2str(target), 'location', 'southeast');
+    if i == 1
+        title('Gyroscope calibration - X axis');
+    elseif i == 2
+        title('Gyroscope calibration - Y axis');
+    elseif i == 3
+        title('Gyroscope calibration - Z axis');
+    end
+    ylabel('Angular units');
+        xlabel('Sample');    
+    drawnow;
+end
+
+%Print gains and biases
+disp('The estimated Gyroscope biases are:')
+disp(['X:', num2str(gain_g(1)*mean(bias_g(:,1)))])
+disp(['Y:', num2str(gain_g(2)*mean(bias_g(:,2)))])
+disp(['Z:', num2str(gain_g(3)*mean(bias_g(:,3)))])
+disp('The estimated Gyroscope scale factors are:')
+disp(['X:', num2str(gain_g(1))])
+disp(['Y:', num2str(gain_g(2))])
+disp(['Z:', num2str(gain_g(3))])
+
 %% Generate output file
-fid = fopen('Acc_Mag.txt', 'w');
+fid = fopen('IMU_output.txt', 'w');
 fprintf(fid, 'The estimated Accelerometer biases are:\n');
 fprintf(fid, 'X: %f\n', bias_a(1));
 fprintf(fid, 'Y: %f\n', bias_a(2));
@@ -162,6 +240,14 @@ fprintf(fid, 'The estimated Magnetometer scale factors are:\n');
 fprintf(fid, 'X: %f\n', gain_m(1));
 fprintf(fid, 'Y: %f\n', gain_m(2));
 fprintf(fid, 'Z: %f\n', gain_m(3));
+fprintf(fid, 'The estimated Gyroscope biases are:\n');
+fprintf(fid, '%f\n', gain_g(1)*mean(bias_g(:,1)));
+fprintf(fid, '%f\n', gain_g(2)*mean(bias_g(:,2)));
+fprintf(fid, '%f\n', gain_g(3)*mean(bias_g(:,2)));
+fprintf(fid, 'The estimated Gyroscope scale factors are:\n');
+fprintf(fid, '%f\n', gain_g(1));
+fprintf(fid, '%f\n', gain_g(2));
+fprintf(fid, '%f\n', gain_g(3));
 fclose(fid);
 
 %% 3D PLOT

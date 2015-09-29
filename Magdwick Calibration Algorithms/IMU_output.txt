@@ -1,0 +1,24 @@
+The estimated Accelerometer biases are:
+X: 0.060997
+Y: 0.023418
+Z: 0.436866
+The estimated Accelerometer scale factors are:
+X: 0.009409
+Y: 0.009658
+Z: 0.009919
+The estimated Magnetometer biases are:
+X: 0.262748
+Y: 0.194075
+Z: -0.539573
+The estimated Magnetometer scale factors are:
+X: 0.003535
+Y: 0.003647
+Z: 0.003937
+The estimated Gyroscope biases are:
+-0.146418
+-0.049190
+-0.052977
+The estimated Gyroscope scale factors are:
+0.000319
+0.000285
+0.000307
