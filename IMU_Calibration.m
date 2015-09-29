@@ -1,15 +1,15 @@
 %% AccMag_Calibration      %
 % Author: Mattia Giurato   %
-% Last review: 2015/08/25  %
+% Last review: 2015/09/29  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
 close all 
 clc
 
 %% Import logged data
-endACCMAG = 3600;
+endACCMAG = 7330;
 
-RAW = dlmread('log_raw_new4.txt');
+RAW = dlmread('log_raw_newnew2.txt');
 acc = RAW(1:endACCMAG,1:3);
 mag = RAW(1:endACCMAG,7:9);
 gyr = RAW(endACCMAG+1:length(RAW),4:6);
@@ -151,10 +151,10 @@ disp(['Z:', num2str(gain_m(3))])
 %% Calibrating Gyroscope
 
 %Extracting each measurement
-delta = 100;
-gyr_x = -gyr(540:540+delta,1);
-gyr_y = gyr(140:140+delta,2);
-gyr_z = gyr(990:990+delta,3);
+delta = 160;
+gyr_x = -gyr(1120:1120+delta,1);
+gyr_y = gyr(320:320+delta,2);
+gyr_z = gyr(2030:2030+delta,3);
 
 gyro = [gyr_x gyr_y gyr_z];
 
@@ -167,7 +167,7 @@ gyro = [gyr_x gyr_y gyr_z];
 
 %Setting gyro parameters
 target = pi;
-samplePeriod = 1/50;
+samplePeriod = 1/100;
 gain_g = [0.001 0.001 0.001];
 bias_g = zeros(length(gyro),3);
 
@@ -241,13 +241,13 @@ fprintf(fid, 'X: %f\n', gain_m(1));
 fprintf(fid, 'Y: %f\n', gain_m(2));
 fprintf(fid, 'Z: %f\n', gain_m(3));
 fprintf(fid, 'The estimated Gyroscope biases are:\n');
-fprintf(fid, '%f\n', gain_g(1)*mean(bias_g(:,1)));
-fprintf(fid, '%f\n', gain_g(2)*mean(bias_g(:,2)));
-fprintf(fid, '%f\n', gain_g(3)*mean(bias_g(:,2)));
+fprintf(fid, 'X: %f\n', gain_g(1)*mean(bias_g(:,1)));
+fprintf(fid, 'Y: %f\n', gain_g(2)*mean(bias_g(:,2)));
+fprintf(fid, 'Z: %f\n', gain_g(3)*mean(bias_g(:,2)));
 fprintf(fid, 'The estimated Gyroscope scale factors are:\n');
-fprintf(fid, '%f\n', gain_g(1));
-fprintf(fid, '%f\n', gain_g(2));
-fprintf(fid, '%f\n', gain_g(3));
+fprintf(fid, 'X: %f\n', gain_g(1));
+fprintf(fid, 'Y: %f\n', gain_g(2));
+fprintf(fid, 'Z: %f\n', gain_g(3));
 fclose(fid);
 
 %% 3D PLOT
