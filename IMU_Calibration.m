@@ -152,9 +152,15 @@ disp(['Z:', num2str(gain_m(3))])
 
 %Extracting each measurement
 delta = 160;
-gyr_x = -gyr(1120:1120+delta,1);
-gyr_y = gyr(320:320+delta,2);
-gyr_z = gyr(2030:2030+delta,3);
+
+%newnew
+% gyr_x = -gyr(1120:1120+delta,1);
+% gyr_y = gyr(320:320+delta,2);
+% gyr_z = gyr(2030:2030+delta,3);
+%newnew2
+gyr_x = -gyr(1140:1140+delta,1);
+gyr_y = gyr(340:340+delta,2);
+gyr_z = gyr(2050:2050+delta,3);
 
 gyro = [gyr_x gyr_y gyr_z];
 
@@ -208,7 +214,8 @@ for i = 1:3;
         title('Gyroscope calibration - Z axis');
     end
     ylabel('Angular units');
-        xlabel('Sample');    
+        xlabel('Sample');  
+        grid
     drawnow;
 end
 

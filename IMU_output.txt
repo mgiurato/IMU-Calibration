@@ -15,10 +15,10 @@ X: 0.002309
 Y: 0.002369
 Z: 0.002605
 The estimated Gyroscope biases are:
-X: -0.139632
-Y: -0.048177
-Z: -0.049607
+X: -0.169510
+Y: -0.044965
+Z: -0.044094
 The estimated Gyroscope scale factors are:
-X: 0.000325
-Y: 0.000316
-Z: 0.000325
+X: 0.000320
+Y: 0.000317
+Z: 0.000310
