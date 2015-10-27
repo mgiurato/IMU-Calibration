@@ -213,7 +213,7 @@ for i = 1:3;
     elseif i == 3
         title('Gyroscope calibration - Z axis');
     end
-    ylabel('Angular units');
+    ylabel('[rad],[rad/s]');
         xlabel('Sample');  
         grid
     drawnow;
@@ -261,10 +261,10 @@ fclose(fid);
 [x,y,z] = sphere;
 figure('name','Accelerometer_sphere')
 plot3(acc_c(:,1), acc_c(:,2), acc_c(:,3))
+axis equal
 hold on
 m = mesh(9.81*x,9.81*y,9.81*z);
 set(m,'facecolor','none')
-axis equal
 grid
 hold off
 
