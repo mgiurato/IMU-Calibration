@@ -7,9 +7,9 @@ close all
 clc
 
 %% Import logged data
-endACCMAG = 7330;
-
-RAW = dlmread('log_raw_newnew2.txt');
+endACCMAG = 8250;
+    
+RAW = dlmread('log1702161944.txt');
 acc = RAW(1:endACCMAG,1:3);
 mag = RAW(1:endACCMAG,7:9);
 gyr = RAW(endACCMAG+1:length(RAW),4:6);
@@ -151,16 +151,16 @@ disp(['Z:', num2str(gain_m(3))])
 %% Calibrating Gyroscope
 
 %Extracting each measurement
-delta = 160;
+delta = 150;
 
 %newnew
 % gyr_x = -gyr(1120:1120+delta,1);
 % gyr_y = gyr(320:320+delta,2);
 % gyr_z = gyr(2030:2030+delta,3);
 %newnew2
-gyr_x = -gyr(1140:1140+delta,1);
-gyr_y = gyr(340:340+delta,2);
-gyr_z = gyr(2050:2050+delta,3);
+gyr_x = -gyr(1100:1100+delta,1);
+gyr_y = gyr(300:300+delta,2);
+gyr_z = gyr(2000:2000+delta,3);
 
 gyro = [gyr_x gyr_y gyr_z];
 
